@@ -1,3 +1,5 @@
+import json
+
 user_choice = -1
 
 tasks = []
@@ -30,26 +32,29 @@ def delete_task():
 
 
 def save_tasks_to_file():
-    with open("tasks.txt", "w", encoding="utf-8") as file:
-        for task in tasks:
-            file.write(task + "\n")
+    with open("tasks.json", "w", encoding="utf-8") as file:
+        json.dump(tasks, file, ensure_ascii=False)
         print("Zapisano zmiany")
     file.close()
 
 
 def load_tasks_form_file():
     try:
-        with open("tasks.txt", encoding="utf-8") as file:
+        with open("tasks.json", encoding="utf-8") as file:
+            global tasks
+            tasks = json.load(file)
 
-            for line in file.readlines():
-                tasks.append(line.strip())
-
-            file.close()
     except FileNotFoundError:
         return
 
 
 load_tasks_form_file()
+
+
+def exit_program():
+    save_tasks_to_file()
+    print("Zamykam program")
+
 
 while user_choice != 5:
     if user_choice == 1:
@@ -73,3 +78,6 @@ while user_choice != 5:
 
     user_choice = int(input("Wybierz liczbę: "))
     print()
+
+if user_choice == 5:
+    exit_program()
